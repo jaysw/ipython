@@ -21,6 +21,14 @@ except ImportError:
     except ImportError:    
         have_readline = False
 
+if sys.platform.startswith('java'):
+    try:
+        from readline_java import *
+        import readline_java as _rl
+        have_readline = True
+    except ImportError:
+        have_readline = False
+
 if sys.platform == 'win32' and have_readline:
     try:
         _outputfile=_rl.GetOutputFile()
