@@ -8,6 +8,7 @@ compatibility)
 """
 
 from IPython import ipapi
+from IPython.genutils import osname
 import os,re,textwrap
 
 # The import below effectively obsoletes your old-style ipythonrc[.ini],
@@ -96,7 +97,7 @@ def main():
         syscmds = db.get("syscmdlist")
     
     # lowcase aliases on win32 only
-    if os.name == 'posix':
+    if osname() == 'posix':
         mapper = lambda s:s
     else:
         def mapper(s): return s.lower()

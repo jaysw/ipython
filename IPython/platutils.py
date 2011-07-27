@@ -16,8 +16,10 @@ import os
 import sys
 import warnings
 
+from IPython.genutils import osname
+
 # Import the platform-specific implementations
-if os.name == 'posix':
+if osname() == 'posix':
     import platutils_posix as _platutils
 elif sys.platform == 'win32':
     import platutils_win32 as _platutils

@@ -44,6 +44,14 @@ else:
     # Curses on Solaris may not be complete, so we can't use it there
     USE_CURSES = hasattr(curses,'initscr')
 
+
+
+def osname():
+    """ Return jython's os._name if it exists as os.name is always 'java'
+    under jython.
+    """
+    return getattr(os, '_name', os.name)
+
 # Other IPython utilities
 import IPython
 from IPython.Itpl import Itpl,itpl,printpl
@@ -51,7 +59,7 @@ from IPython import DPyGetOpt, platutils
 from IPython.generics import result_display
 import IPython.ipapi
 from IPython.external.path import path
-if os.name == "nt":
+if osname() == "nt":
     from IPython.winconsole import get_console_size
 
 try:
@@ -368,7 +376,7 @@ def shell(cmd,verbose=0,debug=0,header=''):
         platutils.set_term_title("IPy " + abbrev_cwd())
 
 # override shell() for win32 to deal with network shares
-if os.name in ('nt','dos'):
+if osname() in ('nt','dos'):
 
     shell_ori = shell
 
@@ -938,7 +946,7 @@ def get_home_dir():
             raise KeyError
         return homedir.decode(sys.getfilesystemencoding())
     except KeyError:
-        if os.name == 'posix':
+        if osname() == 'posix':
             # Last-ditch attempt at finding a suitable $HOME, on systems where
             # it may not be defined in the environment but the system shell
             # still knows it - reported once as:
@@ -950,8 +958,8 @@ def get_home_dir():
                 return homedir.decode(sys.getfilesystemencoding())
             else:
                 raise HomeDirError('Undefined $HOME, IPython cannot proceed.')
-        elif os.name == 'nt':
-            # For some strange reason, win9x returns 'nt' for os.name.
+        elif osname() == 'nt':
+            # For some strange reason, win9x returns 'nt' for osname().
             try:
                 homedir = os.path.join(env['HOMEDRIVE'],env['HOMEPATH'])
                 if not isdir(homedir):
@@ -979,7 +987,7 @@ def get_home_dir():
                     raise
                 except:
                     return 'C:\\'
-        elif os.name == 'dos':
+        elif osname() == 'dos':
             # Desperate, may do absurd things in classic MacOS. May work under DOS.
             return 'C:\\'
         else:
@@ -992,7 +1000,7 @@ def get_ipython_dir():
     This uses the logic in `get_home_dir` to find the home directory
     and the adds either .ipython or _ipython to the end of the path.
     """
-    if os.name == 'posix':
+    if osname() == 'posix':
          ipdir_def = '.ipython'
     else:
          ipdir_def = '_ipython'
@@ -1506,7 +1514,7 @@ def native_line_ends(filename,backup=1):
 
     backup_suffixes = {'posix':'~','dos':'.bak','nt':'.bak','mac':'.bak'}
 
-    bak_filename = filename + backup_suffixes[os.name]
+    bak_filename = filename + backup_suffixes[osname()]
 
     original = open(filename).read()
     shutil.copy2(filename,bak_filename)
@@ -1529,9 +1537,9 @@ def get_pager_cmd(pager_cmd = None):
 
     Makes some attempts at finding an OS-correct one."""
 
-    if os.name == 'posix':
+    if osname() == 'posix':
         default_pager_cmd = 'less -r'  # -r for color control sequences
-    elif os.name in ['nt','dos']:
+    elif osname() in ['nt','dos']:
         default_pager_cmd = 'type'
 
     if pager_cmd is None:
@@ -1559,7 +1567,7 @@ def get_pager_start(pager,start):
 
 #----------------------------------------------------------------------------
 # (X)emacs on W32 doesn't like to be bypassed with msvcrt.getch()
-if os.name == 'nt' and os.environ.get('TERM','dumb') != 'emacs':
+if osname() == 'nt' and os.environ.get('TERM','dumb') != 'emacs':
     import msvcrt
     def page_more():
         """ Smart pausing between pages
@@ -1643,7 +1651,7 @@ def page(strng,start=0,screen_lines=0,pager_cmd = None):
 
     # Ugly kludge, but calling curses.initscr() flat out crashes in emacs
     TERM = os.environ.get('TERM','dumb')
-    if TERM in ['dumb','emacs'] and os.name != 'nt':
+    if TERM in ['dumb','emacs'] and osname() != 'nt':
         print strng
         return
     # chop off the topmost part of the string we don't want to see
@@ -1657,7 +1665,7 @@ def page(strng,start=0,screen_lines=0,pager_cmd = None):
     # terminals. If someone later feels like refining it, it's not hard.
     numlines = max(num_newlines,int(len_str/80)+1)
 
-    if os.name == "nt":
+    if osname() == "nt":
         screen_lines_def = get_console_size(defaulty=25)[1]
     else:
         screen_lines_def = 25 # default value if we can't auto-determine
@@ -1701,7 +1709,7 @@ def page(strng,start=0,screen_lines=0,pager_cmd = None):
         # sets retval to 1, at the end we resort to our own page_dumb() pager.
         pager_cmd = get_pager_cmd(pager_cmd)
         pager_cmd += ' ' + get_pager_start(pager_cmd,start)
-        if os.name == 'nt':
+        if osname() == 'nt':
             if pager_cmd.startswith('type'):
                 # The default WinXP 'type' command is failing on complex strings.
                 retval = 1

@@ -81,7 +81,7 @@ class ConfigLoader:
                 try:
                     incfile = filefind(incfilename,incpath)
                 except IOError:
-                    if os.name in ['nt','dos']:
+                    if osname() in ['nt','dos']:
                         try:
                             # Try again with '.ini' extension
                             incfilename += '.ini'

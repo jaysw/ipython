@@ -34,14 +34,15 @@ from IPython.genutils import (
     get_ipython_dir, 
     get_log_dir, 
     get_security_dir, 
-    num_cpus
+    num_cpus,
+    osname
 )
 from IPython.kernel.fcutil import have_crypto
 
 # Create various ipython directories if they don't exist.
 # This must be done before IPython.kernel.config is imported.
 from IPython.iplib import user_setup
-if os.name == 'posix':
+if osname() == 'posix':
     rc_suffix = ''
 else:
     rc_suffix = '.ini'

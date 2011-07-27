@@ -45,17 +45,14 @@ isfile = os.path.isfile
 #-------------------------------------------------------------------------------
 # Handle OS specific things
 #-------------------------------------------------------------------------------
-
-if os.name == 'posix':
-    os_name = 'posix'
-elif os.name in ['nt','dos']:
+os_name = getattr(os, '_name', os.name) # for jython
+if os_name == 'posix':
+  pass
+elif os_name in ['nt','dos']:
     os_name = 'windows'
 else:
-    if getattr(os, '_name', None):
-        os_name = os._name
-    else:
-        print 'Unsupported operating system:',os.name
-        sys.exit(1)
+    print 'Unsupported operating system:',os.name
+    sys.exit(1)
 
 # Under Windows, 'sdist' has not been supported.  Now that the docs build with
 # Sphinx it might work, but let's not turn it on until someone confirms that it

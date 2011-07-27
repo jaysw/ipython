@@ -46,10 +46,10 @@ import os,shlex,sys,time
 import threading,Queue
 
 from IPython import genutils
-
+from IPython.genutil import osname
 import IPython.ipapi
 
-if os.name == 'nt':
+if osname() == 'nt':
     def kill_process(pid):
         os.system('taskkill /F /PID %d' % pid)
 else:

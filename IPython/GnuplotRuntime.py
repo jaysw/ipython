@@ -53,7 +53,7 @@ __all__ = ['Gnuplot','gp','gp_new','Data','File','Func','GridData',
            'pm3d_config','eps_fix_bbox']
 
 import os,tempfile,sys
-from IPython.genutils import getoutput
+from IPython.genutils import getoutput, osname
 
 #---------------------------------------------------------------------------
 # Notes on mouse support for Gnuplot.py
@@ -89,7 +89,7 @@ else:
 del tmpname,gnu_out
 
 # Default state for persistence of new gnuplot instances
-if os.name in ['nt','dos'] or sys.platform == 'cygwin':
+if osname() in ['nt','dos'] or sys.platform == 'cygwin':
     gnuplot_persist = 0
 else:
     gnuplot_persist = 1
